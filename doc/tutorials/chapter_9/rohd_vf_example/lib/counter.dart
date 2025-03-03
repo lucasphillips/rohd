@@ -11,7 +11,8 @@ class MyCounterInterface extends Interface<CounterDirection> {
 
   final int width;
   MyCounterInterface({this.width = 8}) {
-    setPorts([Logic.port('en'), Logic.port('reset')], [CounterDirection.inward]);
+    setPorts(
+        [Logic.port('en'), Logic.port('reset')], [CounterDirection.inward]);
 
     setPorts([
       Logic.port('val', width),
