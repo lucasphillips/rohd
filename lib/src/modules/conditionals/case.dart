@@ -11,6 +11,7 @@ import 'package:collection/collection.dart';
 import 'package:meta/meta.dart';
 import 'package:rohd/rohd.dart';
 import 'package:rohd/src/modules/conditionals/ssa.dart';
+import 'package:rohd/src/utilities/sanitizer.dart';
 
 /// Represents a single case within a [Case] block.
 class CaseItem {
@@ -20,8 +21,11 @@ class CaseItem {
   /// A [List] of [Conditional]s to execute when [value] is matched.
   final List<Conditional> then;
 
+  /// An optional label for this case body.
+  final String? label;
+
   /// Executes [then] when [value] matches.
-  CaseItem(this.value, this.then);
+  CaseItem(this.value, this.then, {this.label});
 
   @override
   String toString() => '$value : $then';
@@ -119,6 +123,9 @@ class Case extends Conditional {
   List<Conditional>? get defaultItem => _defaultItem;
   List<Conditional>? _defaultItem;
 
+  /// Optional label for the default case block.
+  final String? defaultLabel;
+
   /// The type of case block this is, for special attributes
   /// (e.g. [ConditionalType.unique], [ConditionalType.priority]).
   ///
@@ -130,7 +137,8 @@ class Case extends Conditional {
   /// If none of [items] match, then [defaultItem] is executed.
   Case(this.expression, this.items,
       {List<Conditional>? defaultItem,
-      this.conditionalType = ConditionalType.none})
+      this.conditionalType = ConditionalType.none,
+      this.defaultLabel})
       : _defaultItem = defaultItem {
     for (final item in items) {
       if (item.value.width != expression.width) {
@@ -267,12 +275,14 @@ class Case extends Conditional {
     final subPadding = Conditional.calcPadding(indent + 2);
     for (final item in items) {
       final conditionName = inputsNameMap[driverInput(item.value).name];
+      final caseLabel =
+          item.label == null ? '' : ' : ${Sanitizer.sanitizeSV(item.label!)}';
       final caseContents = item.then
           .map((conditional) => conditional.verilogContents(
               indent + 4, inputsNameMap, outputsNameMap, assignOperator))
           .join('\n');
       verilog.write('''
-$subPadding$conditionName : begin
+$subPadding$conditionName : begin$caseLabel
 $caseContents
 ${subPadding}end
 ''');
@@ -282,8 +292,11 @@ ${subPadding}end
           .map((conditional) => conditional.verilogContents(
               indent + 4, inputsNameMap, outputsNameMap, assignOperator))
           .join('\n');
+      final defaultCaseLabel = defaultLabel == null
+          ? ''
+          : ' : ${Sanitizer.sanitizeSV(defaultLabel!)}';
       verilog.write('''
-${subPadding}default : begin
+${subPadding}default : begin$defaultCaseLabel
 $defaultCaseContents
 ${subPadding}end
 ''');
