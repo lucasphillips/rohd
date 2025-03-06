@@ -392,7 +392,7 @@ class CaseZ extends Case {
   ///
   /// If none of [items] match, then [defaultItem] is executed.
   CaseZ(super.expression, super.items,
-      {super.defaultItem, super.conditionalType});
+      {super.defaultItem, super.conditionalType, super.defaultLabel});
 
   @override
   String get caseType => 'casez';
