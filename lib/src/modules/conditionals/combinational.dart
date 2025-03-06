@@ -26,7 +26,8 @@ class Combinational extends Always {
   /// If any "write after read" occurs, then a [WriteAfterReadException] will
   /// be thrown since it could lead to a mismatch between simulation and
   /// synthesis.  See [Combinational.ssa] for more details.
-  Combinational(super._conditionals, {super.name = 'combinational'}) {
+  Combinational(super._conditionals,
+      {super.name = 'combinational', super.label}) {
     _execute(); // for initial values
     for (final driver in assignedDriverToInputMap.keys) {
       driver.glitch.listen((args) {

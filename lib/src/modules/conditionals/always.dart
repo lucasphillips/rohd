@@ -21,6 +21,9 @@ abstract class Always extends Module with SystemVerilog {
       UnmodifiableListView<Conditional>(_conditionals);
   List<Conditional> _conditionals;
 
+  /// Optional block label
+  final String? label;
+
   /// A mapping from internal receiver signals to designated [Module] outputs.
   @protected
   @internal
@@ -47,7 +50,10 @@ abstract class Always extends Module with SystemVerilog {
   /// driven by any other [Conditional] in this block, it will be driven to the
   /// specified reset value.
   Always(this._conditionals,
-      {Logic? reset, Map<Logic, dynamic>? resetValues, super.name = 'always'}) {
+      {Logic? reset,
+      Map<Logic, dynamic>? resetValues,
+      super.name = 'always',
+      this.label}) {
     // create a registration of all inputs and outputs of this module
     var idx = 0;
 
@@ -176,10 +182,12 @@ abstract class Always extends Module with SystemVerilog {
         ports.entries.where((element) => this.inputs.containsKey(element.key)));
     final outputs = Map.fromEntries(ports.entries
         .where((element) => this.outputs.containsKey(element.key)));
+    final blockLabel =
+        label == null ? '' : ' : ${Sanitizer.sanitizeSV(label!)}';
 
     var verilog = '';
     verilog += '//  $instanceName\n';
-    verilog += '${alwaysVerilogStatement(inputs)} begin\n';
+    verilog += '${alwaysVerilogStatement(inputs)} begin$blockLabel\n';
     verilog += _alwaysContents(inputs, outputs, assignOperator());
     verilog += 'end\n';
     return verilog;
