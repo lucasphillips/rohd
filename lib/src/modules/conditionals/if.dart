@@ -213,7 +213,7 @@ class If extends Conditional {
       verilog.write('''
 $padding$header$condition begin$iffLabel
 $ifContents
-${padding}end ''');
+${padding}end$iffLabel ''');
     }
     verilog.write('\n');
 

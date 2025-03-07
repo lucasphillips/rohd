@@ -189,7 +189,7 @@ abstract class Always extends Module with SystemVerilog {
     verilog += '//  $instanceName\n';
     verilog += '${alwaysVerilogStatement(inputs)} begin$blockLabel\n';
     verilog += _alwaysContents(inputs, outputs, assignOperator());
-    verilog += 'end\n';
+    verilog += 'end$blockLabel\n';
     return verilog;
   }
 }

@@ -284,7 +284,7 @@ class Case extends Conditional {
       verilog.write('''
 $subPadding$conditionName : begin$caseLabel
 $caseContents
-${subPadding}end
+${subPadding}end$caseLabel
 ''');
     }
     if (defaultItem != null) {
@@ -298,7 +298,7 @@ ${subPadding}end
       verilog.write('''
 ${subPadding}default : begin$defaultCaseLabel
 $defaultCaseContents
-${subPadding}end
+${subPadding}end$defaultCaseLabel
 ''');
     }
     verilog.write('${padding}endcase\n');
