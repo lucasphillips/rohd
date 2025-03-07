@@ -90,7 +90,8 @@ class Combinational extends Always {
   /// that it will not be noticeable.
   factory Combinational.ssa(
       List<Conditional> Function(Logic Function(Logic signal) s) construct,
-      {String name = 'combinational_ssa'}) {
+      {String name = 'combinational_ssa',
+      String? label}) {
     final context = _ssaContextCounter++;
 
     final ssas = <SsaLogic>[];
@@ -110,7 +111,7 @@ class Combinational extends Always {
     // no need to keep any of this old info around anymore
     signalToSsaDrivers.clear();
 
-    return Combinational(conditionals, name: name);
+    return Combinational(conditionals, name: name, label: label);
   }
 
   /// A map from [SsaLogic]s to signals that they drive.

@@ -43,7 +43,8 @@ class CaseItem {
 Logic cases(Logic expression, Map<dynamic, dynamic> conditions,
     {int? width,
     ConditionalType conditionalType = ConditionalType.none,
-    dynamic defaultValue}) {
+    dynamic defaultValue,
+    String? label}) {
   for (final conditionValue in [
     ...conditions.values,
     if (defaultValue != null) defaultValue
@@ -85,6 +86,7 @@ Logic cases(Logic expression, Map<dynamic, dynamic> conditions,
   }
 
   final result = Logic(name: 'result', width: width, naming: Naming.mergeable);
+  var labelNum = 0;
 
   Combinational([
     Case(
@@ -95,10 +97,12 @@ Logic cases(Logic expression, Map<dynamic, dynamic> conditions,
                 condition.key is Logic
                     ? condition.key as Logic
                     : Const(condition.key, width: expression.width),
-                [result < condition.value])
+                [result < condition.value],
+                label: label == null ? null : '${label}_case${labelNum++}')
         ],
         conditionalType: conditionalType,
-        defaultItem: defaultValue != null ? [result < defaultValue] : null)
+        defaultItem: defaultValue != null ? [result < defaultValue] : null,
+        defaultLabel: label == null ? null : '${label}_default')
   ]);
 
   return result;

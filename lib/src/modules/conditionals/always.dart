@@ -111,8 +111,10 @@ abstract class Always extends Module with SystemVerilog {
           reset,
           // then use it for assigning receiver
           then: allResetCondAssigns,
+          ifLabel: '${label}_if',
           // else assign zero as resetValue
           orElse: conditionals,
+          elseLabel: '${label}_else',
         ),
       ];
     }
