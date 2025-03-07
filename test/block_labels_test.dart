@@ -207,35 +207,35 @@ void main() {
   });
 
   group('case statements', () {
-    test('valid case', () async {
-      final vectors = [
-        Vector({'control': 0, 'a': 0, 'b': 0}, {'out': 0}),
-        Vector({'control': 0, 'a': 0, 'b': 1}, {'out': 0}),
-        Vector({'control': 0, 'a': 1, 'b': 0}, {'out': 1}),
-        Vector({'control': 0, 'a': 1, 'b': 1}, {'out': 1}),
-        Vector({'control': 1, 'a': 0, 'b': 0}, {'out': 0}),
-        Vector({'control': 1, 'a': 0, 'b': 1}, {'out': 1}),
-        Vector({'control': 1, 'a': 1, 'b': 0}, {'out': 0}),
-        Vector({'control': 1, 'a': 1, 'b': 1}, {'out': 1}),
-      ];
+    final shorthandCaseVectors = [
+      Vector({'control': 0, 'a': 0, 'b': 0}, {'out': 0}),
+      Vector({'control': 0, 'a': 0, 'b': 1}, {'out': 0}),
+      Vector({'control': 0, 'a': 1, 'b': 0}, {'out': 1}),
+      Vector({'control': 0, 'a': 1, 'b': 1}, {'out': 1}),
+      Vector({'control': 1, 'a': 0, 'b': 0}, {'out': 0}),
+      Vector({'control': 1, 'a': 0, 'b': 1}, {'out': 1}),
+      Vector({'control': 1, 'a': 1, 'b': 0}, {'out': 0}),
+      Vector({'control': 1, 'a': 1, 'b': 1}, {'out': 1}),
+    ];
+    final caseVectors = [
+      Vector({'a': 0, 'b': 0}, {'out': 1}),
+      Vector({'a': 0, 'b': 1}, {'out': 0}),
+      Vector({'a': 1, 'b': 0}, {'out': 0}),
+      Vector({'a': 1, 'b': 1}, {'out': 1}),
+    ];
+    test('valid shorthand case', () async {
       final gtm = LabeledCasesModule(Logic(), Logic(), Logic());
       await gtm.build();
-      await SimCompare.checkFunctionalVector(gtm, vectors);
-      final simResult = SimCompare.iverilogVector(gtm, vectors);
+      await SimCompare.checkFunctionalVector(gtm, shorthandCaseVectors);
+      final simResult = SimCompare.iverilogVector(gtm, shorthandCaseVectors);
       expect(simResult, equals(true));
     });    
     test('valid case', () async {
 
       final gtm = LabeledCaseModule(Logic(), Logic());
       await gtm.build();
-      final vectors = [
-        Vector({'a': 0, 'b': 0}, {'out': 1}),
-        Vector({'a': 0, 'b': 1}, {'out': 0}),
-        Vector({'a': 1, 'b': 0}, {'out': 0}),
-        Vector({'a': 1, 'b': 1}, {'out': 1}),
-      ];
-      await SimCompare.checkFunctionalVector(gtm, vectors);
-      final simResult = SimCompare.iverilogVector(gtm, vectors);
+      await SimCompare.checkFunctionalVector(gtm, caseVectors);
+      final simResult = SimCompare.iverilogVector(gtm, caseVectors);
       expect(simResult, equals(true));
     });
 
@@ -243,14 +243,9 @@ void main() {
       final gtm = LabeledCaseModule(
         Logic(), Logic(), 'caseItem2');
       await gtm.build();
-      final vectors = [
-        Vector({'a': 0, 'b': 0}, {'out': 1}),
-        Vector({'a': 0, 'b': 1}, {'out': 0}),
-        Vector({'a': 1, 'b': 0}, {'out': 0}),
-        Vector({'a': 1, 'b': 1}, {'out': 1}),
-      ];
-      await SimCompare.checkFunctionalVector(gtm, vectors);
-      final simResult = SimCompare.iverilogVector(gtm, vectors);
+      await SimCompare.checkFunctionalVector(gtm, caseVectors);
+      final simResult = SimCompare.iverilogVector(
+        gtm, caseVectors, buildOnly: true);
       expect(simResult, equals(false));
     });
 
@@ -258,29 +253,24 @@ void main() {
       final gtm = LabeledCaseModule(
         Logic(), Logic(), 'caseItem1', 'caseItem2', 'caseItem1');
       await gtm.build();
-      final vectors = [
-        Vector({'a': 0, 'b': 0}, {'out': 1}),
-        Vector({'a': 0, 'b': 1}, {'out': 0}),
-        Vector({'a': 1, 'b': 0}, {'out': 0}),
-        Vector({'a': 1, 'b': 1}, {'out': 1}),
-      ];
-      await SimCompare.checkFunctionalVector(gtm, vectors);
-      final simResult = SimCompare.iverilogVector(gtm, vectors);
+      await SimCompare.checkFunctionalVector(gtm, caseVectors);
+      final simResult = SimCompare.iverilogVector(
+        gtm, caseVectors, buildOnly: true);
       expect(simResult, equals(false));
     });    
   });
 
   group('if/else if/else blocks', () {
+    final vectors = [
+      Vector({'a': 0, 'b': 0}, {'out': 0}),
+      Vector({'a': 0, 'b': 1}, {'out': 0}),
+      Vector({'a': 1, 'b': 0}, {'out': 1}),
+      Vector({'a': 1, 'b': 1}, {'out': 0}),
+    ];
     test('valid case', () async {
       final gtm = LabeledIfModule(
         Logic(), Logic());
       await gtm.build();
-      final vectors = [
-        Vector({'a': 0, 'b': 0}, {'out': 0}),
-        Vector({'a': 0, 'b': 1}, {'out': 0}),
-        Vector({'a': 1, 'b': 0}, {'out': 1}),
-        Vector({'a': 1, 'b': 1}, {'out': 0}),
-      ];
       await SimCompare.checkFunctionalVector(gtm, vectors);
       final simResult = SimCompare.iverilogVector(gtm, vectors);
       expect(simResult, equals(true));
@@ -290,14 +280,9 @@ void main() {
       final gtm = LabeledIfModule(
         Logic(), Logic(), 'comb_1', 'if_1', 'if_1');
       await gtm.build();
-      final vectors = [
-        Vector({'a': 0, 'b': 0}, {'out': 0}),
-        Vector({'a': 0, 'b': 1}, {'out': 0}),
-        Vector({'a': 1, 'b': 0}, {'out': 1}),
-        Vector({'a': 1, 'b': 1}, {'out': 0}),
-      ];
       await SimCompare.checkFunctionalVector(gtm, vectors);
-      final simResult = SimCompare.iverilogVector(gtm, vectors);
+      final simResult = SimCompare.iverilogVector(
+        gtm, vectors, buildOnly: true);
       expect(simResult, equals(false));
     });
 
@@ -305,52 +290,42 @@ void main() {
       final gtm = LabeledIfModule(
         Logic(), Logic(), 'comb_1', 'if_1', 'else_if_1', 'if_1');
       await gtm.build();
-      final vectors = [
-        Vector({'a': 0, 'b': 0}, {'out': 0}),
-        Vector({'a': 0, 'b': 1}, {'out': 0}),
-        Vector({'a': 1, 'b': 0}, {'out': 1}),
-        Vector({'a': 1, 'b': 1}, {'out': 0}),
-      ];      
       await SimCompare.checkFunctionalVector(gtm, vectors);
-      final simResult = SimCompare.iverilogVector(gtm, vectors);
+      final simResult = SimCompare.iverilogVector(
+        gtm, vectors, buildOnly: true);
       expect(simResult, equals(false));
     });
 
     test('same else if and else labels', () async {
       final gtm = LabeledIfModule(
         Logic(), Logic(), 'comb_1', 'if_1', 'else_if_1', 'else_if_1');
-      await gtm.build();
-      final vectors = [
-        Vector({'a': 0, 'b': 0}, {'out': 0}),
-        Vector({'a': 0, 'b': 1}, {'out': 0}),
-        Vector({'a': 1, 'b': 0}, {'out': 1}),
-        Vector({'a': 1, 'b': 1}, {'out': 0}),
-      ];      
+      await gtm.build();    
       await SimCompare.checkFunctionalVector(gtm, vectors);
-      final simResult = SimCompare.iverilogVector(gtm, vectors);
+      final simResult = SimCompare.iverilogVector(
+        gtm, vectors, buildOnly: true);
       expect(simResult, equals(false));
     });
   });
 
   group('seqeuntial blocks', () {
+    final vectors = [
+      Vector({'reset': 1}, {}),
+      Vector({}, {'q': 0}),
+      Vector({'reset': 0, 'd': 0}, {}),
+      Vector({}, {'q': 0}),
+      Vector({'reset': 0, 'd': 1}, {}),
+      Vector({}, {'q': 0}),
+      Vector({'reset': 0, 'd': 1}, {}),
+      Vector({}, {'q': 1}),
+      Vector({'reset': 1, 'd': 0}, {}),
+      Vector({}, {'q': 0}),
+      Vector({'reset': 1, 'd': 1}, {}),
+      Vector({}, {'q': 0}),
+    ];
     test('valid labels', () async {
       final gtm = LabeledChainSequentialModule(
         Logic(), Logic());
       await gtm.build();
-      final vectors = [
-        Vector({'reset': 1}, {}),
-        Vector({}, {'q': 0}),
-        Vector({'reset': 0, 'd': 0}, {}),
-        Vector({}, {'q': 0}),
-        Vector({'reset': 0, 'd': 1}, {}),
-        Vector({}, {'q': 0}),
-        Vector({'reset': 0, 'd': 1}, {}),
-        Vector({}, {'q': 1}),
-        Vector({'reset': 1, 'd': 0}, {}),
-        Vector({}, {'q': 0}),
-        Vector({'reset': 1, 'd': 1}, {}),
-        Vector({}, {'q': 0}),
-      ];
       await SimCompare.checkFunctionalVector(gtm, vectors);
       final simResult = SimCompare.iverilogVector(gtm, vectors);
       expect(simResult, equals(true));
@@ -360,22 +335,9 @@ void main() {
       final gtm = LabeledChainSequentialModule(
         Logic(), Logic(), 'ff_0', 'ff_0');
       await gtm.build();
-      final vectors = [
-        Vector({'reset': 1}, {}),
-        Vector({}, {'q': 0}),
-        Vector({'reset': 0, 'd': 0}, {}),
-        Vector({}, {'q': 0}),
-        Vector({'reset': 0, 'd': 1}, {}),
-        Vector({}, {'q': 0}),
-        Vector({'reset': 0, 'd': 1}, {}),
-        Vector({}, {'q': 1}),
-        Vector({'reset': 1, 'd': 0}, {}),
-        Vector({}, {'q': 0}),
-        Vector({'reset': 1, 'd': 1}, {}),
-        Vector({}, {'q': 0}),
-      ];
       await SimCompare.checkFunctionalVector(gtm, vectors);
-      final simResult = SimCompare.iverilogVector(gtm, vectors);
+      final simResult = SimCompare.iverilogVector(
+        gtm, vectors, buildOnly: true);
       expect(simResult, equals(false));
     });
   });
@@ -401,19 +363,19 @@ void main() {
         Vector({'a': 1, 'b': 0, 'c': 1, 'd': 0}, {'out_0': 0, 'out_1': 1})
       ];
       await SimCompare.checkFunctionalVector(gtm, vectors);
-      final simResult = SimCompare.iverilogVector(gtm, vectors);
+      final simResult = SimCompare.iverilogVector(
+        gtm, vectors, buildOnly: true);
       expect(simResult, equals(false));
     });
   });
 
   group('combinational ssa', () {
+    final vectors = [
+      Vector({'a': 3}, {'b': LogicValue.x, 'c': LogicValue.x})
+    ];
     test('valid labels', () async {
       final gtm = LabeledSsaModule(Logic(width: 8));
       await gtm.build();
-      final vectors = [
-        Vector({'a': 3}, {'b': LogicValue.x, 'c': LogicValue.x})
-      ];
-
       await SimCompare.checkFunctionalVector(gtm, vectors);
       final simResult = SimCompare.iverilogVector(gtm, vectors);
       expect(simResult, equals(true));
@@ -422,12 +384,9 @@ void main() {
     test('same block labels', () async {
       final gtm = LabeledSsaModule(Logic(width: 8), 'block_0', 'block_0');
       await gtm.build();
-      final vectors = [
-        Vector({'a': 3}, {'b': LogicValue.x, 'c': LogicValue.x})
-      ];
-
       await SimCompare.checkFunctionalVector(gtm, vectors);
-      final simResult = SimCompare.iverilogVector(gtm, vectors);
+      final simResult = SimCompare.iverilogVector(
+        gtm, vectors, buildOnly: true);
       expect(simResult, equals(false));
     });    
   });
