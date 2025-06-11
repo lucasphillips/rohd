@@ -102,7 +102,7 @@ Logic cases(Logic expression, Map<dynamic, dynamic> conditions,
         ],
         conditionalType: conditionalType,
         defaultItem: defaultValue != null ? [result < defaultValue] : null,
-        defaultLabel: label == null ? null : '${label}_default')
+        name: label)
   ]);
 
   return result;
@@ -128,7 +128,7 @@ class Case extends Conditional {
   List<Conditional>? _defaultItem;
 
   /// Optional label for the default case block.
-  final String? defaultLabel;
+  final String? name;
 
   /// The type of case block this is, for special attributes
   /// (e.g. [ConditionalType.unique], [ConditionalType.priority]).
@@ -142,7 +142,7 @@ class Case extends Conditional {
   Case(this.expression, this.items,
       {List<Conditional>? defaultItem,
       this.conditionalType = ConditionalType.none,
-      this.defaultLabel})
+      this.name})
       : _defaultItem = defaultItem {
     for (final item in items) {
       if (item.value.width != expression.width) {
@@ -296,9 +296,8 @@ ${subPadding}end$caseLabel
           .map((conditional) => conditional.verilogContents(
               indent + 4, inputsNameMap, outputsNameMap, assignOperator))
           .join('\n');
-      final defaultCaseLabel = defaultLabel == null
-          ? ''
-          : ' : ${Sanitizer.sanitizeSV(defaultLabel!)}';
+      final defaultCaseLabel =
+          name == null ? '' : ' : default_${Sanitizer.sanitizeSV(name!)}';
       verilog.write('''
 ${subPadding}default : begin$defaultCaseLabel
 $defaultCaseContents
@@ -396,7 +395,7 @@ class CaseZ extends Case {
   ///
   /// If none of [items] match, then [defaultItem] is executed.
   CaseZ(super.expression, super.items,
-      {super.defaultItem, super.conditionalType, super.defaultLabel});
+      {super.defaultItem, super.conditionalType, super.name});
 
   @override
   String get caseType => 'casez';

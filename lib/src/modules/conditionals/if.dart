@@ -89,13 +89,11 @@ class If extends Conditional {
   /// If [condition] is high, then [then] executes, otherwise [orElse] is
   /// executed.
   If(Logic condition,
-      {List<Conditional>? then,
-      List<Conditional>? orElse,
-      String? ifLabel,
-      String? elseLabel})
+      {List<Conditional>? then, List<Conditional>? orElse, String? label})
       : this.block([
-          Iff(condition, then ?? [], label: ifLabel),
-          if (orElse != null) Else(orElse, label: elseLabel),
+          Iff(condition, then ?? [], label: label == null ? null : 'if_$label'),
+          if (orElse != null)
+            Else(orElse, label: label == null ? null : 'else_$label'),
         ]);
 
   /// If [condition] is high, then [then] is excutes,

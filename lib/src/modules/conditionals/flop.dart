@@ -152,9 +152,7 @@ class FlipFlop extends Module with SystemVerilog {
     var contents = [q < _d];
 
     if (_en != null) {
-      contents = [
-        If(_en!, then: contents, ifLabel: label == null ? null : '${label}_en')
-      ];
+      contents = [If(_en!, then: contents)];
     }
 
     Sequential(
@@ -164,7 +162,6 @@ class FlipFlop extends Module with SystemVerilog {
       asyncReset: asyncReset,
       resetValues:
           _reset != null ? {q: _resetValuePort ?? _resetValueConst} : null,
-      label: label,
     );
   }
 
